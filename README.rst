@@ -17,8 +17,8 @@ by Craig Nevill-Manning and Ian Witten.
    parser = Parser()
    parser.parse('hello hello')
    print(parser.grammar())
-   0 → 1 _ 1
-   1 → hello
+   0 -> 1 _ 1
+   1 -> hello
 
 `SciKit Sequitur`_ works on strings, lines, or any sequence of Python objects.
 
