@@ -1,8 +1,11 @@
 -e .
 black
+doc8
 flake8
+gj
 isort
 mypy
 pylint
 pytest
+rstcheck
 tox
