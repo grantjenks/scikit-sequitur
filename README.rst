@@ -1,5 +1,5 @@
-SciKit Sequitur
-===============
+Python SciKit Sequitur
+======================
 
 `SciKit Sequitur`_ is an Apache2 licensed Python module for inferring
 compositional hierarchies from sequences.
@@ -12,11 +12,10 @@ by Craig Nevill-Manning and Ian Witten.
 
 .. code-block:: python
 
-   from sksequitur import Parser
-
-   parser = Parser()
-   parser.parse('hello hello')
-   print(parser.grammar())
+   >>> from sksequitur import Parser
+   >>> parser = Parser()
+   >>> parser.parse('hello hello')
+   >>> print(parser.grammar())
    0 -> 1 _ 1
    1 -> hello
 
@@ -32,7 +31,7 @@ Features
 - Tested using GitHub Actions on Linux, Mac, and Windows
 
 .. image:: https://github.com/grantjenks/scikit-sequitur/workflows/integration/badge.svg
-   :target: http://www.grantjenks.com/docs/scikit-sequitur/
+   :target: http://www.grantjenks.com/docs/sksequitur/
 
 
 Quickstart
@@ -75,7 +74,7 @@ Reference
 * `scikit-sequitur at GitHub`_
 * `scikit-sequitur Issue Tracker`_
 
-.. _`scikit-sequitur Documentation`: http://www.grantjenks.com/docs/scikit-sequitur/
+.. _`scikit-sequitur Documentation`: http://www.grantjenks.com/docs/sksequitur/
 .. _`scikit-sequitur at PyPI`: https://pypi.python.org/pypi/scikit-sequitur/
 .. _`scikit-sequitur at GitHub`: https://github.com/grantjenks/scikit-sequitur/
 .. _`scikit-sequitur Issue Tracker`: https://github.com/grantjenks/scikit-sequitur/issues/
@@ -98,5 +97,5 @@ CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations under the License.
 
 
-.. _`SciKit Sequitur`: http://www.grantjenks.com/docs/scikit-sequitur/
-.. _`scikit-sequitur`: http://www.grantjenks.com/docs/scikit-sequitur/
+.. _`SciKit Sequitur`: http://www.grantjenks.com/docs/sksequitur/
+.. _`scikit-sequitur`: http://www.grantjenks.com/docs/sksequitur/
