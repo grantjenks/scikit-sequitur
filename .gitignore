@@ -1,0 +1,20 @@
+# Generated files
+*.pyc
+
+# Virtual environment directories
+/env*/
+
+# Test files and directories
+.coverage
+.pytest_cache/
+/.tox/
+.mypy_cache/
+
+# Setup directories
+/sksequitur.egg-info/
+/build/
+/dist/
+/docs/_build/
+
+# macOS metadata
+.DS_Store
