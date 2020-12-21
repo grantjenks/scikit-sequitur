@@ -9,3 +9,5 @@ pylint
 pytest
 rstcheck
 tox
+twine
+wheel
