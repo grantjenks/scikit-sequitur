@@ -25,7 +25,7 @@ with open("README.rst") as reader:
     readme = reader.read()
 
 setup(
-    name=sksequitur.__title__,
+    name="scikit-sequitur",
     version=sksequitur.__version__,
     description="Sequitur algorithm for inferring hierarchies",
     long_description=readme,
