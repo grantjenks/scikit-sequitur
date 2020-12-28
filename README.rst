@@ -12,12 +12,11 @@ by Craig Nevill-Manning and Ian Witten.
 
 .. code-block:: python
 
-   >>> from sksequitur import Parser
-   >>> parser = Parser()
-   >>> parser.parse('hello hello')
-   >>> print(parser.grammar())
+   >>> from sksequitur import parse
+   >>> grammar = parse('hello hello')
+   >>> print(grammar)
    0 -> 1 _ 1
-   1 -> hello
+   1 -> h e l l o
 
 `SciKit Sequitur`_ works on strings, lines, or any sequence of Python objects.
 
@@ -47,23 +46,60 @@ function:
 .. code-block:: python
 
    >>> import sksequitur
-   >>> help(sksequitur)                         # doctest: +SKIP
+   >>> help(sksequitur)                    # doctest: +SKIP
 
 
 Tutorial
 --------
 
-The `scikit-sequitur`_ module provides utilities for parsing and interacting
-with grammars.
+The `scikit-sequitur`_ module provides utilities for parsing sequences and
+understanding grammars.
+
+.. code-block:: python
+
+   >>> from sksequitur import parse
+   >>> print(parse('abcabcabab'))
+   0 -> 1 1 2 2
+   1 -> 2 c
+   2 -> a b
+
+The `parse` function is a shortcut for `Parser`s and `Grammar`s.
 
 .. code-block:: python
 
    >>> from sksequitur import Parser
    >>> parser = Parser()
-   >>> parser.parse('hello hello')
+
+Feed works incrementally.
+
+.. code-block:: python
+
+   >>> parser.feed('abca')
+   >>> parser.feed('bc')
+   >>> parser.feed('abab')
+
+Parsers can be converted to Grammars.
+
+.. code-block:: python
+
+   >>> from sksequitur import Grammar
+   >>> grammar = Grammar(parser)
+   >>> print(grammar)
+   0 -> 1 1 2 2
+   1 -> 2 c
+   2 -> a b
+
+Stop symbols can not be made part of a rule.
+
+.. code-block:: python
+
+   >>> parser = Parser()
+   >>> parser.feed('abcab')
+   >>> parser.stop()
+   >>> parser.feed('cabab')
    >>> print(parser.grammar())
-   0 → 1 ␣ 1
-   1 → hello
+   0 -> 1 c 1 . c 1 1
+   1 -> a b
 
 
 Reference
