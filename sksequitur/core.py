@@ -359,6 +359,13 @@ class Grammar:
         expansions.clear()
         expansions[start] = _visit(start)
 
+    def repr(self):
+        output = []
+
+        for production, values in self._productions.items():
+            ...
+
+
 def parse(iterable):
     """Parse iterable and return grammar."""
     start = Rule()
