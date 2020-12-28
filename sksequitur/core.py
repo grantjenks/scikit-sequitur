@@ -322,6 +322,43 @@ class Grammar:
             return production
 
         self._start = _visit(start)
+
+    def build_lengths(self):
+        lengths = self._lengths
+        productions = self._productions
+        start = self._start
+
+        def _visit(production):
+            if production not in productions:
+                return 1
+            if production in lengths:
+                return lengths[production]
+            iterator = map(_visit, productions[production])
+            length = sum(iterator)
+            lengths[production] = length
+            return length
+
+        lengths.clear()
+        lengths[start] = _visit(start)
+
+    def build_expansions(self):
+        expansions = self._expansions
+        productions = self._productions
+        start = self._start
+
+        def _visit(production):
+            if production not in productions:
+                return (production,)
+            if production in expansions:
+                return expansions[production]
+            iterator = map(_visit, productions[production])
+            expansion = list(chain.from_iterable(iterator))
+            expansions[production] = expansion
+            return expansion
+
+        expansions.clear()
+        expansions[start] = _visit(start)
+
 def parse(iterable):
     """Parse iterable and return grammar."""
     start = Rule()
