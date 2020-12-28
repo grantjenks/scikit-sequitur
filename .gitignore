@@ -11,7 +11,7 @@
 .mypy_cache/
 
 # Setup directories
-/sksequitur.egg-info/
+/scikit_sequitur.egg-info/
 /build/
 /dist/
 /docs/_build/
