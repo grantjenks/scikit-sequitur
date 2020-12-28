@@ -2,6 +2,9 @@
 
 """
 
+from collections import namedtuple
+from itertools import chain, count
+
 
 class Symbol:
     """Symbol
@@ -286,6 +289,39 @@ class Printer:
         return "\n".join(lines) + "\n"
 
 
+Production = namedtuple('Production', 'number')
+
+
+class Grammar:
+    """Initialize a grammar from a start rule.
+
+    """
+    def __init__(self, start):
+        self._productions = productions = {}
+        self._expansions = {}
+        self._lengths = {}
+        rule_to_production = {}
+        counter = count()
+
+        def _iterate(rule):
+            symbol = rule.next_symbol
+            while not symbol.is_guard():
+                yield symbol
+                symbol = symbol.next_symbol
+
+        def _visit(symbol):
+            rule = symbol.rule
+            if not rule:
+                return symbol.token
+            if rule in rule_to_production:
+                return rule_to_production[rule]
+            production = Production(next(counter))
+            rule_to_production[rule] = production
+            iterator = _iterate(rule)
+            productions[production] = list(map(_visit, iterator))
+            return production
+
+        self._start = _visit(start)
 def parse(iterable):
     """Parse iterable and return grammar."""
     start = Rule()
