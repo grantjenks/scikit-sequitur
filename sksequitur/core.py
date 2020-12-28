@@ -247,7 +247,7 @@ class Printer:
         if value == "\n":
             return chr(0x21B5)
         if value == "\t":
-            return chr(8677)
+            return chr(0x21E5)
         if value in ("\\", "(", ")", "_") or value.isdigit():
             return value
         return value
