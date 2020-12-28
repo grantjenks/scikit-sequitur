@@ -210,6 +210,34 @@ class Stop(Symbol):
     # TODO
 
 
+class Parser:
+    """Parser for Sequitur parse trees.
+
+    """
+
+    def __init__(self):
+        self._start = Rule()
+
+    @property
+    def tree(self):
+        """Root of the parse tree."""
+        return self._start
+
+    def feed(self, iterable):
+        """Feed iterable to the parser.
+
+        Iterate items in iterable and build the parse tree.
+
+        """
+        self._start.feed(iterable)
+
+    def stop(self):
+        """Add stop symbol to the parser.
+
+        """
+        self._start.stop()
+
+
 class Printer:
     """Printer for Rule-based grammars."""
 
@@ -368,8 +396,7 @@ class Grammar:
 
 def parse(iterable):
     """Parse iterable and return grammar."""
-    start = Rule()
-    start.parse(iterable)
-    printer = Printer()
-    result = printer.print_grammar(start)
-    return result
+    parser = Parser()
+    parser.feed(iterable)
+    grammar = Grammar(parser.tree)
+    return grammar
