@@ -198,6 +198,15 @@ class Rule(Symbol):
             self.prev_symbol.prev_symbol.check()
 
 
+class Stop(Symbol):
+    """Stop
+
+    Special symbol that can not be replaced by rules.
+
+    """
+    # TODO
+
+
 class Printer:
     """Printer for Rule-based grammars."""
 
