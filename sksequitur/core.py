@@ -191,7 +191,7 @@ class Rule(Symbol):
         assert self.refcount == 0, "Symbol should increment refcount"
         self.join(self)
 
-    def parse(self, iterable):
+    def feed(self, iterable):
         """Parse iterable by repeatedly inserting elements at the end of the
         rule.
 
