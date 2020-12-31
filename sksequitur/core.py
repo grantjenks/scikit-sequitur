@@ -347,6 +347,7 @@ class Grammar:
                 symbol = symbol.next_symbol
 
         def _visit(symbol):
+            # TODO: Change DFS to BFS!
             rule = symbol.rule
             if not rule:
                 return symbol.token
@@ -379,13 +380,12 @@ class Grammar:
         lengths[start] = _visit(start)
 
     def build_expansions(self):
-        expansions = self._expansions
         productions = self._productions
-        start = self._start
+        expansions = self._expansions
 
         def _visit(production):
-            if production not in productions:
-                return (production,)
+            if not isinstance(production, Production):
+                return [production]
             if production in expansions:
                 return expansions[production]
             iterator = map(_visit, productions[production])
@@ -394,13 +394,29 @@ class Grammar:
             return expansion
 
         expansions.clear()
+        start = self._start
         expansions[start] = _visit(start)
 
-    def repr(self):
-        output = []
-
-        for production, values in self._productions.items():
-            ...
+    def __str__(self):
+        self.build_expansions()
+        expansions = self._expansions
+        value_map = self.value_map
+        lines = []
+        for production, values in sorted(self._productions.items()):
+            parts = [production, '->']
+            parts.extend(value_map.get(value, value) for value in values)
+            prefix = ' '.join(map(str, parts))
+            if production == 0:
+                lines.append(prefix)
+                continue
+            space = ' ' * (50 - len(prefix) if len(prefix) < 50 else 1)
+            expansion = expansions[production]
+            parts = (value_map.get(value, value) for value in expansion)
+            suffix = ''.join(map(str, parts))
+            triple = prefix, space, suffix
+            line = ''.join(triple)
+            lines.append(line)
+        return '\n'.join(lines)
 
 
 def parse(iterable):
