@@ -311,19 +311,28 @@ class Printer:
 
             i += 1
 
-        result = "".join(self.output_array)
-        lines = result.splitlines()
+        expansion = "".join(self.output_array)
+        lines = expansion.splitlines()
         lines = [line.rstrip() for line in lines]
         return "\n".join(lines) + "\n"
 
 
-Production = namedtuple('Production', 'number')
+class Production(int):
+    """Production
+
+    """
 
 
 class Grammar:
     """Initialize a grammar from a start rule.
 
     """
+    value_map = {
+        ' ': '_',
+        '\n': chr(0x21B5),
+        '\t': chr(0x21E5),
+    }
+
     def __init__(self, start):
         self._productions = productions = {}
         self._expansions = {}
