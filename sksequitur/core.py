@@ -15,20 +15,29 @@ class Symbol:
     Tightly coupled with Rule.
 
     """
+    __slots__ = ['bigrams', 'next_symbol', 'prev_symbol', 'value']
 
     def __init__(self, value, bigrams):
         self.bigrams = bigrams
         self.next_symbol = None
         self.prev_symbol = None
-        self.token = None
-        self.rule = None
+        self.value = value
+        if type(value) is Rule:
+            value.value += 1
 
-        if type(value) is Rule:  # pylint: disable=unidiomatic-typecheck
-            self.rule = value
-            self.rule.refcount += 1
-        else:
-            self.token = value
-            assert self.token, "Token values must be truthy"
+    @property
+    def token(self):
+        if type(self) is Rule or type(self.value) is Rule:
+            return None
+        return self.value
+
+    @property
+    def rule(self):
+        if type(self) is Rule:
+            return self
+        if type(self.value) is Rule:
+            return self.value
+        return None
 
     def join(self, right):
         """Link two symbols together, removing any old bigram from the hash
@@ -71,7 +80,7 @@ class Symbol:
         if not self.is_guard():
             self.delete_bigram()
             if self.rule:
-                self.rule.refcount -= 1
+                self.rule.value -= 1
 
     def delete_bigram(self):
         """Remove the bigram from the hash table."""
@@ -155,18 +164,8 @@ class Symbol:
             self.substitute(rule)
             self.bigrams[rule.next_symbol.bigram()] = rule.next_symbol
         # Check for an underused rule
-        if rule.next_symbol.rule and rule.next_symbol.rule.refcount == 1:
+        if rule.next_symbol.rule and rule.next_symbol.rule.value == 1:
             rule.next_symbol.expand()
-
-    @property
-    def value(self):
-        """Return value of symbol.
-
-        The "rule" attribute is None for Symbol instances and set for Rule
-        instances.
-
-        """
-        return self.rule or self.token
 
     def bigram(self):
         """Bigram tuple pair of self value and next symbol value."""
@@ -184,30 +183,18 @@ class Rule(Symbol):
     Tightly coupled with Symbol.
 
     """
+    __slots__ = []
 
     def __init__(self, bigrams=None):
-        self.refcount = -1
-        super().__init__(self, {} if bigrams is None else bigrams)
-        assert self.refcount == 0, "Symbol should increment refcount"
+        super().__init__(0, {} if bigrams is None else bigrams)
         self.join(self)
 
-    def feed(self, iterable):
-        """Parse iterable by repeatedly inserting elements at the end of the
-        rule.
 
-        """
-        for value in iterable:
-            self.prev_symbol.insert_after(value)
-            self.prev_symbol.prev_symbol.check()
+class Stop(object):
+    __slots__ = []
 
-
-class Stop(Symbol):
-    """Stop
-
-    Special symbol that can not be replaced by rules.
-
-    """
-    # TODO
+    def __str__(self):
+        return '|'
 
 
 class Parser:
@@ -216,12 +203,17 @@ class Parser:
     """
 
     def __init__(self):
-        self._start = Rule()
+        self._bigrams = {}
+        self._tree = Rule(self._bigrams)
 
     @property
     def tree(self):
         """Root of the parse tree."""
-        return self._start
+        return self._tree
+
+    @property
+    def bigrams(self):
+        return self._bigrams
 
     def feed(self, iterable):
         """Feed iterable to the parser.
@@ -229,98 +221,26 @@ class Parser:
         Iterate items in iterable and build the parse tree.
 
         """
-        self._start.feed(iterable)
+        tree = self._tree
+        for value in iterable:
+            tree.prev_symbol.insert_after(value)
+            tree.prev_symbol.prev_symbol.check()
 
     def stop(self):
-        """Add stop symbol to the parser.
+        """Add stop token to the parser.
 
         """
-        self._start.stop()
-
-
-class Printer:
-    """Printer for Rule-based grammars."""
-
-    def __init__(self):
-        self.rule_set = []
-        self.output_array = []
-        self.line_length = 0
-        self.numbers = {}
-
-    def print_rule(self, rule):
-        """Visit rule."""
-        symbol = rule.next_symbol
-        while not symbol.is_guard():
-            if symbol.rule:
-                if (
-                    self.rule_set[self.numbers.get(symbol.rule, 0)]
-                    == symbol.rule
-                ):
-                    rule_number = self.numbers[symbol.rule]
-                else:
-                    rule_number = len(self.rule_set)
-                    self.numbers[symbol.rule] = rule_number
-                    self.rule_set.append(symbol.rule)
-                self.output_array.append(str(rule_number) + " ")
-                self.line_length += len(str(rule_number) + " ")
-            else:
-                self.output_array.append(self.print_token(symbol.value))
-                self.output_array.append(" ")
-                self.line_length += 2
-            symbol = symbol.next_symbol
-
-    @staticmethod
-    def print_token(value):
-        """Print token."""
-        value = str(value)
-        if value == " ":
-            return "_"
-        if value == "\n":
-            return chr(0x21B5)
-        if value == "\t":
-            return chr(0x21E5)
-        if value in ("\\", "(", ")", "_") or value.isdigit():
-            return value
-        return value
-
-    def print_rule_expansion(self, rule):
-        """Visit rule and add expandsion."""
-        symbol = rule.next_symbol
-        while not symbol.is_guard():
-            if symbol.rule:
-                self.print_rule_expansion(symbol.rule)
-            else:
-                self.output_array.append(self.print_token(symbol.value))
-            symbol = symbol.next_symbol
-
-    def print_grammar(self, start):
-        """Print grammar."""
-        self.rule_set.append(start)
-        i = 0
-
-        while i < len(self.rule_set):
-            self.output_array.append(f"{i} → ")
-            self.line_length = len(f"{i}    ")
-            self.print_rule(self.rule_set[i])
-
-            if i > 0:
-                self.output_array.append(" " * (50 - self.line_length))
-                self.print_rule_expansion(self.rule_set[i])
-
-            self.output_array.append("\n")
-
-            i += 1
-
-        expansion = "".join(self.output_array)
-        lines = expansion.splitlines()
-        lines = [line.rstrip() for line in lines]
-        return "\n".join(lines) + "\n"
+        tree = self._tree
+        stop = Stop()
+        tree.prev_symbol.insert_after(stop)
+        tree.prev_symbol.check()
 
 
 class Production(int):
     """Production
 
     """
+    __slots__ = []
 
 
 class Grammar:
