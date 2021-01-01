@@ -76,7 +76,8 @@ def test_genesis():
     # print(grammar)
     with open(module_dir / "genesis_result.txt") as reader:
         result = reader.read()
-    assert str(grammar) == result
+    assert result.endswith('\n')
+    assert str(grammar) == result[:-1]
 
 
 def test_green_eggs_ham():
@@ -86,7 +87,8 @@ def test_green_eggs_ham():
     # print(grammar)
     with open(module_dir / "iamsam_result.txt") as reader:
         result = reader.read()
-    assert str(grammar) == result
+    assert result.endswith('\n')
+    assert str(grammar) == result[:-1]
 
 
 def test_nums():
