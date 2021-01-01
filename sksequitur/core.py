@@ -2,7 +2,7 @@
 
 """
 
-from collections import namedtuple
+from collections import defaultdict, deque
 from itertools import chain, count
 
 
@@ -336,48 +336,27 @@ class Grammar:
     def __init__(self, start):
         self._productions = productions = {}
         self._expansions = {}
-        self._lengths = {}
-        rule_to_production = {}
         counter = count()
-
-        def _iterate(rule):
-            symbol = rule.next_symbol
+        rule_to_production = defaultdict(lambda: Production(next(counter)))
+        self._start = rule_to_production[start.rule]
+        symbols = deque([start])
+        while symbols:
+            symbol = symbols.popleft()
+            assert symbol.rule is not None
+            production = rule_to_production[symbol.rule]
+            if production in productions:
+                continue  # Already visited.
+            symbol = symbol.next_symbol
+            values = []
             while not symbol.is_guard():
-                yield symbol
+                if symbol.rule:
+                    symbols.append(symbol.rule)
+                    value = rule_to_production[symbol.rule]
+                else:
+                    value = symbol.token
+                values.append(value)
                 symbol = symbol.next_symbol
-
-        def _visit(symbol):
-            # TODO: Change DFS to BFS!
-            rule = symbol.rule
-            if not rule:
-                return symbol.token
-            if rule in rule_to_production:
-                return rule_to_production[rule]
-            production = Production(next(counter))
-            rule_to_production[rule] = production
-            iterator = _iterate(rule)
-            productions[production] = list(map(_visit, iterator))
-            return production
-
-        self._start = _visit(start)
-
-    def build_lengths(self):
-        lengths = self._lengths
-        productions = self._productions
-        start = self._start
-
-        def _visit(production):
-            if production not in productions:
-                return 1
-            if production in lengths:
-                return lengths[production]
-            iterator = map(_visit, productions[production])
-            length = sum(iterator)
-            lengths[production] = length
-            return length
-
-        lengths.clear()
-        lengths[start] = _visit(start)
+            productions[production] = values
 
     def build_expansions(self):
         productions = self._productions
