@@ -58,10 +58,9 @@ understanding grammars.
 .. code-block:: python
 
    >>> from sksequitur import parse
-   >>> print(parse('abcabcabab'))
-   0 -> 1 1 2 2
-   1 -> 2 c                                          abc
-   2 -> a b                                          ab
+   >>> print(parse('abcabc'))
+   0 -> 1 1
+   1 -> a b c                                        abc
 
 The `parse` function is a shortcut for `Parser`s and `Grammar`s.
 
@@ -74,9 +73,9 @@ Feed works incrementally.
 
 .. code-block:: python
 
-   >>> parser.feed('abca')
-   >>> parser.feed('bc')
-   >>> parser.feed('abab')
+   >>> parser.feed('ab')
+   >>> parser.feed('cab')
+   >>> parser.feed('c')
 
 Parsers can be converted to Grammars.
 
@@ -85,21 +84,23 @@ Parsers can be converted to Grammars.
    >>> from sksequitur import Grammar
    >>> grammar = Grammar(parser.tree)
    >>> print(grammar)
-   0 -> 1 1 2 2
-   1 -> 2 c                                          abc
-   2 -> a b                                          ab
+   0 -> 1 1
+   1 -> a b c                                        abc
 
 Stop symbols can not be made part of a rule.
 
 .. code-block:: python
 
    >>> parser = Parser()
-   >>> parser.feed('abcab')
+   >>> parser.feed('ab')
    >>> parser.stop()
-   >>> parser.feed('cabab')
-   >>> print(parser.grammar())
-   0 -> 1 c 1 . c 1 1
-   1 -> a b
+   >>> parser.feed('cab')
+   >>> parser.stop()
+   >>> parser.feed('c')
+   >>> grammar = Grammar(parser.tree)
+   >>> print(grammar)
+   0 -> 1 | c 1 | c
+   1 -> a b                                          ab
 
 
 Reference
