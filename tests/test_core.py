@@ -41,7 +41,7 @@ some like it in the pot,
 nine days old.\
 """
     grammar = parse(iterable)
-    print(grammar)
+    # print(grammar)
     result = """\
 0 -> 1 2 3 4 3 5 ↵ ↵ 6 2 7 4 7 5
 1 -> p e a s 8 r r i d g 9                        pease_porridge_
@@ -57,15 +57,6 @@ nine days old.\
 11 -> o l d                                       old
 12 -> i n                                         in\
 """
-
-    # from sksequitur.core import Parser, Printer
-    # parser = Parser()
-    # parser.feed(iterable)
-    # printer = Printer()
-    # printer_result = printer.print_grammar(parser.tree)
-    # assert printer_result == result
-
-
     assert str(grammar) == result
 
 
