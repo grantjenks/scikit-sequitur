@@ -14,7 +14,8 @@ More details are available online at http://www.sequitur.info/
 
 """
 
-from .core import Printer, Rule, parse  # noqa: F401
+from .core import Grammar, Parser, parse
 
+__all__ = ['Grammar', 'Parser', 'parse']
 __title__ = "sksequitur"
 __version__ = "0.0.2"
