@@ -26,12 +26,6 @@ class Symbol:
             value.value += 1
 
     @property
-    def token(self):
-        if type(self) is Rule or type(self.value) is Rule:
-            return None
-        return self.value
-
-    @property
     def rule(self):
         if type(self) is Rule:
             return self
@@ -190,7 +184,7 @@ class Rule(Symbol):
         self.join(self)
 
 
-class Stop(object):
+class Stop:
     __slots__ = []
 
     def __str__(self):
@@ -273,7 +267,7 @@ class Grammar:
                     symbols.append(symbol.rule)
                     value = rule_to_production[symbol.rule]
                 else:
-                    value = symbol.token
+                    value = symbol.value
                 values.append(value)
                 symbol = symbol.next_symbol
             productions[production] = values

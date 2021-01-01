@@ -1,8 +1,16 @@
 import pathlib
 
-from sksequitur import parse
+from sksequitur import Parser, Grammar, parse
 
 module_dir = pathlib.Path(__file__).parent
+
+
+def test_parser():
+    parser = Parser()
+    parser.feed('ab')
+    assert ('a', 'b') in parser.bigrams
+    grammar = Grammar(parser.tree)
+    assert str(grammar) == "0 -> a b"
 
 
 def test_hello2():
@@ -24,6 +32,18 @@ def test_abcabdabcabd():
 0 -> 1 1
 1 -> 2 c 2 d                                      abcabd
 2 -> a b                                          ab\
+"""
+    assert str(grammar) == result
+
+
+def test_abbbabcbb():
+    iterable = "abbbabcbb"
+    grammar = parse(iterable)
+    # print(grammar)
+    result = """\
+0 -> 1 b 2 c 2
+1 -> a b                                          ab
+2 -> b b                                          bb\
 """
     assert str(grammar) == result
 
