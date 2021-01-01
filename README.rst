@@ -16,7 +16,7 @@ by Craig Nevill-Manning and Ian Witten.
    >>> grammar = parse('hello hello')
    >>> print(grammar)
    0 -> 1 _ 1
-   1 -> h e l l o
+   1 -> h e l l o                                    hello
 
 `SciKit Sequitur`_ works on strings, lines, or any sequence of Python objects.
 
@@ -60,8 +60,8 @@ understanding grammars.
    >>> from sksequitur import parse
    >>> print(parse('abcabcabab'))
    0 -> 1 1 2 2
-   1 -> 2 c
-   2 -> a b
+   1 -> 2 c                                          abc
+   2 -> a b                                          ab
 
 The `parse` function is a shortcut for `Parser`s and `Grammar`s.
 
@@ -83,11 +83,11 @@ Parsers can be converted to Grammars.
 .. code-block:: python
 
    >>> from sksequitur import Grammar
-   >>> grammar = Grammar(parser)
+   >>> grammar = Grammar(parser.tree)
    >>> print(grammar)
    0 -> 1 1 2 2
-   1 -> 2 c
-   2 -> a b
+   1 -> 2 c                                          abc
+   2 -> a b                                          ab
 
 Stop symbols can not be made part of a rule.
 
