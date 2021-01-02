@@ -15,7 +15,8 @@ class Symbol:
     Tightly coupled with Rule.
 
     """
-    __slots__ = ['bigrams', 'next_symbol', 'prev_symbol', 'value']
+
+    __slots__ = ["bigrams", "next_symbol", "prev_symbol", "value"]
 
     def __init__(self, value, bigrams):
         self.bigrams = bigrams
@@ -163,6 +164,7 @@ class Rule(Symbol):
     Tightly coupled with Symbol.
 
     """
+
     __slots__ = []
 
     def __init__(self, bigrams=None):
@@ -174,13 +176,11 @@ class Stop:
     __slots__ = []
 
     def __str__(self):
-        return '|'
+        return "|"
 
 
 class Parser:
-    """Parser for Sequitur parse trees.
-
-    """
+    """Parser for Sequitur parse trees."""
 
     def __init__(self):
         self._bigrams = {}
@@ -207,9 +207,7 @@ class Parser:
             tree.prev_symbol.prev_symbol.check()
 
     def stop(self):
-        """Add stop token to the parser.
-
-        """
+        """Add stop token to the parser."""
         tree = self._tree
         stop = Stop()
         tree.prev_symbol.append(stop)
@@ -217,20 +215,20 @@ class Parser:
 
 
 class Production(int):
-    """Production
+    """Production"""
 
-    """
     __slots__ = []
 
 
 class Grammar:
-    """Initialize a grammar from a start rule.
+    """Initialize a grammar from a start rule."""
 
-    """
+    # TODO: How many times does each production occur?
+    # TODO: What are the top five longest expansions?
     value_map = {
-        ' ': '_',
-        '\n': chr(0x21B5),
-        '\t': chr(0x21E5),
+        " ": "_",
+        "\n": chr(0x21B5),
+        "\t": chr(0x21E5),
     }
 
     def __init__(self, tree):
@@ -247,7 +245,7 @@ class Grammar:
                 continue  # Already visited.
             symbol = rule.next_symbol
             values = []
-            while not symbol.__class__ is Rule:
+            while symbol.__class__ is not Rule:
                 value = symbol.value
                 if value.__class__ is Rule:
                     rules.append(value)
@@ -280,20 +278,20 @@ class Grammar:
         value_map = self.value_map
         lines = []
         for production, values in sorted(self._productions.items()):
-            parts = [production, '->']
+            parts = [production, "->"]
             parts.extend(value_map.get(value, value) for value in values)
-            prefix = ' '.join(map(str, parts))
+            prefix = " ".join(map(str, parts))
             if production == 0:
                 lines.append(prefix)
                 continue
-            space = ' ' * (50 - len(prefix) if len(prefix) < 50 else 1)
+            space = " " * (50 - len(prefix) if len(prefix) < 50 else 1)
             expansion = expansions[production]
             parts = (value_map.get(value, value) for value in expansion)
-            suffix = ''.join(map(str, parts))
+            suffix = "".join(map(str, parts))
             triple = prefix, space, suffix
-            line = ''.join(triple)
+            line = "".join(triple)
             lines.append(line)
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
 
 def parse(iterable):

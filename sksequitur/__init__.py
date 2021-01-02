@@ -14,8 +14,8 @@ More details are available online at http://www.sequitur.info/
 
 """
 
-from .core import Grammar, Parser, parse
+from .core import Grammar, Parser, Stop, parse
 
-__all__ = ['Grammar', 'Parser', 'parse']
+__all__ = ["Grammar", "Parser", "Stop", "parse"]
 __title__ = "sksequitur"
 __version__ = "0.0.2"

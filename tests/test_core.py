@@ -1,15 +1,15 @@
 import gc
 import pathlib
 
-from sksequitur import Parser, Grammar, parse
+from sksequitur import Grammar, Parser, parse
 
 module_dir = pathlib.Path(__file__).parent
 
 
 def test_parser():
     parser = Parser()
-    parser.feed('ab')
-    assert ('a', 'b') in parser.bigrams
+    parser.feed("ab")
+    assert ("a", "b") in parser.bigrams
     grammar = Grammar(parser.tree)
     assert str(grammar) == "0 -> a b"
 
@@ -88,7 +88,7 @@ def test_genesis():
     # print(grammar)
     with open(module_dir / "genesis_result.txt") as reader:
         result = reader.read()
-    assert result.endswith('\n')
+    assert result.endswith("\n")
     assert str(grammar) == result[:-1]
 
 
@@ -99,7 +99,7 @@ def test_green_eggs_ham():
     # print(grammar)
     with open(module_dir / "iamsam_result.txt") as reader:
         result = reader.read()
-    assert result.endswith('\n')
+    assert result.endswith("\n")
     assert str(grammar) == result[:-1]
 
 
@@ -116,7 +116,7 @@ def test_gc():
     # print(grammar)
     with open(module_dir / "iamsam_result.txt") as reader:
         result = reader.read()
-    assert result.endswith('\n')
+    assert result.endswith("\n")
     assert str(grammar) == result[:-1]
 
 
