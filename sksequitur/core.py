@@ -37,7 +37,7 @@ class Symbol:
         table.
 
         """
-        if self.next_symbol:
+        if self.next_symbol is not None:
             self.remove_bigram()
 
             # This is to deal with trigrams, where we only record the second
