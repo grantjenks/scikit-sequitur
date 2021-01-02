@@ -16,8 +16,6 @@ class Symbol:
 
     """
 
-    __slots__ = ["bigrams", "next_symbol", "prev_symbol", "value"]
-
     def __init__(self, value, bigrams):
         self.bigrams = bigrams
         self.next_symbol = None
@@ -164,8 +162,6 @@ class Rule(Symbol):
     Tightly coupled with Symbol.
 
     """
-
-    __slots__ = []
 
     def __init__(self, bigrams=None):
         super().__init__(0, {} if bigrams is None else bigrams)
