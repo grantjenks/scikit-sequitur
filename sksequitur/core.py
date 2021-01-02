@@ -22,14 +22,14 @@ class Symbol:
         self.next_symbol = None
         self.prev_symbol = None
         self.value = value
-        if type(value) is Rule:
+        if value.__class__ is Rule:
             value.value += 1
 
     @property
     def rule(self):
-        if type(self) is Rule:
+        if self.__class__ is Rule:
             return self
-        if type(self.value) is Rule:
+        if self.value.__class__ is Rule:
             return self.value
         return None
 
@@ -71,14 +71,14 @@ class Symbol:
 
         """
         self.prev_symbol.join(self.next_symbol)
-        if not self.is_guard():
+        if not self.is_rule():
             self.delete_bigram()
-            if self.rule:
-                self.rule.value -= 1
+            if self.value.__class__ is Rule:
+                self.value.value -= 1
 
     def delete_bigram(self):
         """Remove the bigram from the hash table."""
-        if self.is_guard() or self.next_symbol.is_guard():
+        if self.is_rule() or self.next_symbol.is_rule():
             return
         if self.bigrams.get(self.bigram()) == self:
             del self.bigrams[self.bigram()]
@@ -89,19 +89,19 @@ class Symbol:
         symbol.join(self.next_symbol)
         self.join(symbol)
 
-    def is_guard(self):
+    def is_rule(self):
         """Return true if this is the guard node marking the beginning and end of a
         rule.
 
         """
-        return self.rule and self.rule.next_symbol.prev_symbol == self
+        return self.__class__ is Rule
 
     def check(self):
         """Check a new bigram. If it appears elsewhere, deal with it by calling
         match(), otherwise insert it into the hash table.
 
         """
-        if self.is_guard() or self.next_symbol.is_guard():
+        if self.is_rule() or self.next_symbol.is_rule():
             return False
         match = self.bigrams.get(self.bigram())
         if not match:
@@ -118,8 +118,8 @@ class Symbol:
         """
         left = self.prev_symbol
         right = self.next_symbol
-        first = self.rule.next_symbol
-        last = self.rule.prev_symbol
+        first = self.value.next_symbol
+        last = self.value.prev_symbol
         if self.bigrams.get(self.bigram()) == self:
             del self.bigrams[self.bigram()]
         left.join(first)
@@ -143,8 +143,8 @@ class Symbol:
 
         """
         if (
-            match.prev_symbol.is_guard()
-            and match.next_symbol.next_symbol.is_guard()
+            match.prev_symbol.is_rule()
+            and match.next_symbol.next_symbol.is_rule()
         ):
             # Reuse an existing rule.
             rule = match.prev_symbol.rule
@@ -158,7 +158,7 @@ class Symbol:
             self.substitute(rule)
             self.bigrams[rule.next_symbol.bigram()] = rule.next_symbol
         # Check for an underused rule
-        if rule.next_symbol.rule and rule.next_symbol.rule.value == 1:
+        if rule.next_symbol.rule and rule.next_symbol.value.value == 1:
             rule.next_symbol.expand()
 
     def bigram(self):
@@ -262,7 +262,7 @@ class Grammar:
                 continue  # Already visited.
             symbol = symbol.next_symbol
             values = []
-            while not symbol.is_guard():
+            while not symbol.is_rule():
                 if symbol.rule:
                     symbols.append(symbol.rule)
                     value = rule_to_production[symbol.rule]
