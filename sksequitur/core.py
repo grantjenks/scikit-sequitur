@@ -25,14 +25,6 @@ class Symbol:
         if value.__class__ is Rule:
             value.value += 1
 
-    @property
-    def rule(self):
-        if self.__class__ is Rule:
-            return self
-        if self.value.__class__ is Rule:
-            return self.value
-        return None
-
     def join(self, right):
         """Link two symbols together, removing any old bigram from the hash
         table.
@@ -147,7 +139,7 @@ class Symbol:
             and match.next_symbol.next_symbol.is_rule()
         ):
             # Reuse an existing rule.
-            rule = match.prev_symbol.rule
+            rule = match.prev_symbol
             self.substitute(rule)
         else:
             # Create a new rule.
@@ -158,7 +150,10 @@ class Symbol:
             self.substitute(rule)
             self.bigrams[rule.next_symbol.bigram()] = rule.next_symbol
         # Check for an underused rule
-        if rule.next_symbol.rule and rule.next_symbol.value.value == 1:
+        if (
+            rule.next_symbol.value.__class__ is Rule
+            and rule.next_symbol.value.value == 1
+        ):
             rule.next_symbol.expand()
 
     def bigram(self):
@@ -247,27 +242,25 @@ class Grammar:
         '\t': chr(0x21E5),
     }
 
-    def __init__(self, start):
+    def __init__(self, tree):
         self._productions = productions = {}
         self._expansions = {}
         counter = count()
         rule_to_production = defaultdict(lambda: Production(next(counter)))
-        self._start = rule_to_production[start.rule]
-        symbols = deque([start])
-        while symbols:
-            symbol = symbols.popleft()
-            assert symbol.rule is not None
-            production = rule_to_production[symbol.rule]
+        self._tree = rule_to_production[tree]
+        rules = deque([tree])
+        while rules:
+            rule = rules.popleft()
+            production = rule_to_production[rule]
             if production in productions:
                 continue  # Already visited.
-            symbol = symbol.next_symbol
+            symbol = rule.next_symbol
             values = []
             while not symbol.is_rule():
-                if symbol.rule:
-                    symbols.append(symbol.rule)
-                    value = rule_to_production[symbol.rule]
-                else:
-                    value = symbol.value
+                value = symbol.value
+                if value.__class__ is Rule:
+                    rules.append(value)
+                    value = rule_to_production[value]
                 values.append(value)
                 symbol = symbol.next_symbol
             productions[production] = values
@@ -287,8 +280,8 @@ class Grammar:
             return expansion
 
         expansions.clear()
-        start = self._start
-        expansions[start] = _visit(start)
+        tree = self._tree
+        expansions[tree] = _visit(tree)
 
     def __str__(self):
         self.build_expansions()
