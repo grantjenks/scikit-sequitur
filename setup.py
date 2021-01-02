@@ -2,7 +2,13 @@
 
 Build binary extension in-place for testing with:
 
-$ python setup.py build_ext --inplace
+    $ python setup.py build_ext --inplace
+
+Create annotations for optimization:
+
+    $ cython -3 -a sksequitur/core.py
+    $ python3 -m http.server
+    # Open sksequitur/core.html in browser.
 
 """
 
