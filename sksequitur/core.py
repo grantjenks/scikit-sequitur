@@ -21,16 +21,17 @@ class Symbol:
         self.next_symbol = None
         self.prev_symbol = None
         self.value = value
-        if value.__class__ is Rule:
-            value.value += 1
+        if type(value) is Rule:
+            rule: Rule = value
+            rule.value += 1
 
     def append(self, value):
         """Insert a value after this one."""
         symbol = Symbol(value, self.bigrams)
-        symbol._join(self.next_symbol)
-        self._join(symbol)
+        symbol.join(self.next_symbol)
+        self.join(symbol)
 
-    def _join(self, right):
+    def join(self, right):
         """Link two symbols together, removing any old bigram from the hash
         table.
 
@@ -44,16 +45,16 @@ class Symbol:
             # forget about it.  e.g. abbbabcbb
 
             if (
-                right.prev_symbol
-                and right.next_symbol
+                right.prev_symbol is not None
+                and right.next_symbol is not None
                 and right.value == right.prev_symbol.value
                 and right.value == right.next_symbol.value
             ):
                 self.bigrams[right._bigram()] = right
 
             if (
-                self.prev_symbol
-                and self.next_symbol
+                self.prev_symbol is not None
+                and self.next_symbol is not None
                 and self.value == self.next_symbol.value
                 and self.value == self.prev_symbol.value
             ):
@@ -73,14 +74,14 @@ class Symbol:
         match(), otherwise insert it into the hash table.
 
         """
-        if self.__class__ is Rule or self.next_symbol.__class__ is Rule:
+        if type(self) is Rule or type(self.next_symbol) is Rule:
             return False
         bigram = self._bigram()
-        match = self.bigrams.get(bigram)
+        match: Symbol = self.bigrams.get(bigram)
         if match is None:
             self.bigrams[bigram] = self
             return False
-        if match.next_symbol != self:
+        if match.next_symbol is not self:
             self._process_match(match)
         return True
 
@@ -92,26 +93,26 @@ class Symbol:
 
         """
         if (
-            match.prev_symbol.__class__ is Rule
-            and match.next_symbol.next_symbol.__class__ is Rule
+            type(match.prev_symbol) is Rule
+            and type(match.next_symbol.next_symbol) is Rule
         ):
             # Reuse an existing rule.
-            rule = match.prev_symbol
+            rule: Rule = match.prev_symbol
             self._substitute(rule)
         else:
             # Create a new rule.
-            rule = Rule(self.bigrams)
+            rule = Rule(0, self.bigrams)
+            rule.join(rule)
             rule.prev_symbol.append(self.value)
             rule.prev_symbol.append(self.next_symbol.value)
             match._substitute(rule)
             self._substitute(rule)
             self.bigrams[rule.next_symbol._bigram()] = rule.next_symbol
         # Check for an underused rule
-        if (
-            rule.next_symbol.value.__class__ is Rule
-            and rule.next_symbol.value.value == 1
-        ):
-            rule.next_symbol._expand()
+        if type(rule.next_symbol.value) is Rule:
+            target_rule: Rule = rule.next_symbol.value
+            if target_rule.value == 1:
+                rule.next_symbol._expand()
 
     def _substitute(self, rule):
         """Substitute symbol and previous with given rule."""
@@ -127,10 +128,11 @@ class Symbol:
         reference count.
 
         """
-        self.prev_symbol._join(self.next_symbol)
+        self.prev_symbol.join(self.next_symbol)
         self._remove_bigram()
-        if self.value.__class__ is Rule:
-            self.value.value -= 1
+        if type(self.value) is Rule:
+            rule: Rule = self.value
+            rule.value -= 1
 
     def _expand(self):
         """This symbol is the last reference to its rule. It is deleted, and the
@@ -139,11 +141,12 @@ class Symbol:
         """
         left = self.prev_symbol
         right = self.next_symbol
-        first = self.value.next_symbol
-        last = self.value.prev_symbol
+        value: Rule = self.value
+        first = value.next_symbol
+        last = value.prev_symbol
         self._remove_bigram()
-        left._join(first)
-        last._join(right)
+        left.join(first)
+        last.join(right)
         self.bigrams[last._bigram()] = last
 
     def _bigram(self):
@@ -163,10 +166,6 @@ class Rule(Symbol):
 
     """
 
-    def __init__(self, bigrams=None):
-        super().__init__(0, {} if bigrams is None else bigrams)
-        self._join(self)
-
 
 class Stop:
     __slots__ = []
@@ -180,7 +179,9 @@ class Parser:
 
     def __init__(self):
         self._bigrams = {}
-        self._tree = Rule(self._bigrams)
+        rule = Rule(0, self._bigrams)
+        rule.join(rule)
+        self._tree = rule
 
     @property
     def tree(self):
@@ -197,14 +198,14 @@ class Parser:
         Iterate items in iterable and build the parse tree.
 
         """
-        tree = self._tree
+        tree: Rule = self._tree
         for value in iterable:
             tree.prev_symbol.append(value)
             tree.prev_symbol.prev_symbol.check()
 
     def stop(self):
         """Add stop token to the parser."""
-        tree = self._tree
+        tree: Rule = self._tree
         stop = Stop()
         tree.prev_symbol.append(stop)
         tree.prev_symbol.prev_symbol.check()
@@ -241,9 +242,9 @@ class Grammar:
                 continue  # Already visited.
             symbol = rule.next_symbol
             values = []
-            while symbol.__class__ is not Rule:
+            while type(symbol) is not Rule:
                 value = symbol.value
-                if value.__class__ is Rule:
+                if type(value) is Rule:
                     rules.append(value)
                     value = rule_to_production[value]
                 values.append(value)
