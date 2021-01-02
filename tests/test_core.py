@@ -1,5 +1,7 @@
 import gc
 import pathlib
+import random
+import string
 
 from sksequitur import Grammar, Parser, parse
 
@@ -129,3 +131,14 @@ def test_nums():
 1 -> 1 2 3                                        123\
 """
     assert str(grammar) == result
+
+
+def benchmark_parsing(iterable):
+    parser = Parser()
+    parser.feed(iterable)
+
+
+def test_benchmark_parsing(benchmark):
+    rand = random.Random(0)
+    iterable = rand.choices(string.ascii_lowercase, k=100_000)
+    benchmark(benchmark_parsing, iterable)
