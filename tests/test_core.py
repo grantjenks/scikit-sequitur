@@ -1,3 +1,4 @@
+import gc
 import pathlib
 
 from sksequitur import Parser, Grammar, parse
@@ -95,6 +96,23 @@ def test_green_eggs_ham():
     with open(module_dir / "iamsam_input.txt") as reader:
         iterable = reader.read()
     grammar = parse(iterable)
+    # print(grammar)
+    with open(module_dir / "iamsam_result.txt") as reader:
+        result = reader.read()
+    assert result.endswith('\n')
+    assert str(grammar) == result[:-1]
+
+
+def test_gc():
+    with open(module_dir / "iamsam_input.txt") as reader:
+        iterable = reader.read()
+    parser = Parser()
+    gc.collect()
+    parser.feed(iterable)
+    # gc.set_debug(gc.DEBUG_SAVEALL)
+    assert gc.collect() == 0
+    # print(gc.garbage)
+    grammar = Grammar(parser.tree)
     # print(grammar)
     with open(module_dir / "iamsam_result.txt") as reader:
         result = reader.read()
