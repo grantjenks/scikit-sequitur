@@ -217,8 +217,8 @@ class Parser:
         """
         tree = self._tree
         stop = Stop()
-        tree.prev_symbol.insert_after(stop)
-        tree.prev_symbol.check()
+        tree.prev_symbol.append(stop)
+        tree.prev_symbol.prev_symbol.check()
 
 
 class Production(int):
