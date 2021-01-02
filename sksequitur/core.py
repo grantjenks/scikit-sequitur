@@ -27,16 +27,16 @@ class Symbol:
     def append(self, value):
         """Insert a value after this one."""
         symbol = Symbol(value, self.bigrams)
-        symbol.join(self.next_symbol)
-        self.join(symbol)
+        symbol._join(self.next_symbol)
+        self._join(symbol)
 
-    def join(self, right):
+    def _join(self, right):
         """Link two symbols together, removing any old bigram from the hash
         table.
 
         """
         if self.next_symbol is not None:
-            self.remove_bigram()
+            self._remove_bigram()
 
             # This is to deal with trigrams, where we only record the second
             # pair of the overlapping bigrams. When we delete the second pair,
@@ -49,7 +49,7 @@ class Symbol:
                 and right.value == right.prev_symbol.value
                 and right.value == right.next_symbol.value
             ):
-                self.bigrams[right.bigram()] = right
+                self.bigrams[right._bigram()] = right
 
             if (
                 self.prev_symbol
@@ -57,14 +57,14 @@ class Symbol:
                 and self.value == self.next_symbol.value
                 and self.value == self.prev_symbol.value
             ):
-                self.bigrams[self.bigram()] = self
+                self.bigrams[self._bigram()] = self
 
         self.next_symbol = right
         right.prev_symbol = self
 
-    def remove_bigram(self):
+    def _remove_bigram(self):
         """Remove the bigram from the hash table."""
-        bigram = self.bigram()
+        bigram = self._bigram()
         if self.bigrams.get(bigram) is self:
             del self.bigrams[bigram]
 
@@ -75,16 +75,16 @@ class Symbol:
         """
         if self.__class__ is Rule or self.next_symbol.__class__ is Rule:
             return False
-        bigram = self.bigram()
+        bigram = self._bigram()
         match = self.bigrams.get(bigram)
         if match is None:
             self.bigrams[bigram] = self
             return False
         if match.next_symbol != self:
-            self.process_match(match)
+            self._process_match(match)
         return True
 
-    def process_match(self, match):
+    def _process_match(self, match):
         """Process match by either reusing an existing rule or creating a new
         rule.
 
@@ -97,56 +97,56 @@ class Symbol:
         ):
             # Reuse an existing rule.
             rule = match.prev_symbol
-            self.substitute(rule)
+            self._substitute(rule)
         else:
             # Create a new rule.
             rule = Rule(self.bigrams)
             rule.prev_symbol.append(self.value)
             rule.prev_symbol.append(self.next_symbol.value)
-            match.substitute(rule)
-            self.substitute(rule)
-            self.bigrams[rule.next_symbol.bigram()] = rule.next_symbol
+            match._substitute(rule)
+            self._substitute(rule)
+            self.bigrams[rule.next_symbol._bigram()] = rule.next_symbol
         # Check for an underused rule
         if (
             rule.next_symbol.value.__class__ is Rule
             and rule.next_symbol.value.value == 1
         ):
-            rule.next_symbol.expand()
+            rule.next_symbol._expand()
 
-    def substitute(self, rule):
+    def _substitute(self, rule):
         """Substitute symbol and previous with given rule."""
         prev = self.prev_symbol
-        prev.next_symbol.delete()
-        prev.next_symbol.delete()
+        prev.next_symbol._delete()
+        prev.next_symbol._delete()
         prev.append(rule)
         if not prev.check():
             prev.next_symbol.check()
 
-    def delete(self):
+    def _delete(self):
         """Clean up for symbol deletion: removes hash table entry and decrement rule
         reference count.
 
         """
-        self.prev_symbol.join(self.next_symbol)
-        self.remove_bigram()
+        self.prev_symbol._join(self.next_symbol)
+        self._remove_bigram()
         if self.value.__class__ is Rule:
             self.value.value -= 1
 
-    def expand(self):
+    def _expand(self):
         """This symbol is the last reference to its rule. It is deleted, and the
-        contents of the rule substituted in its place.
+        contents of the rule _substituted in its place.
 
         """
         left = self.prev_symbol
         right = self.next_symbol
         first = self.value.next_symbol
         last = self.value.prev_symbol
-        self.remove_bigram()
-        left.join(first)
-        last.join(right)
-        self.bigrams[last.bigram()] = last
+        self._remove_bigram()
+        left._join(first)
+        last._join(right)
+        self.bigrams[last._bigram()] = last
 
-    def bigram(self):
+    def _bigram(self):
         """Bigram tuple pair of self value and next symbol value."""
         return (self.value, self.next_symbol.value)
 
@@ -165,7 +165,7 @@ class Rule(Symbol):
 
     def __init__(self, bigrams=None):
         super().__init__(0, {} if bigrams is None else bigrams)
-        self.join(self)
+        self._join(self)
 
 
 class Stop:
