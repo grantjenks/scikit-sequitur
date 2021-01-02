@@ -1,8 +1,12 @@
 """Package Setup for scikit-sequitur
 
+Build binary extension in-place for testing with:
+
+$ python setup.py build_ext --inplace
+
 """
 
-from setuptools import setup
+from setuptools import Extension, setup
 from setuptools.command.test import test as TestCommand
 
 import sksequitur
@@ -24,7 +28,7 @@ class Tox(TestCommand):
 with open("README.rst") as reader:
     readme = reader.read()
 
-setup(
+args = dict(
     name="scikit-sequitur",
     version=sksequitur.__version__,
     description="Sequitur algorithm for inferring hierarchies",
@@ -49,3 +53,20 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
     ],
 )
+
+try:
+    from Cython.Build import cythonize
+
+    ext_modules = [Extension("sksequitur._core", ["sksequitur/core.py"])]
+    setup(
+        ext_modules=cythonize(ext_modules, language_level="3"),
+        **args,
+    )
+except Exception as exception:
+    print("*" * 79)
+    print(exception)
+    print("*" * 79)
+    print("Failed to setup sksequitur with Cython. See error message above.")
+    print("Falling back to pure-Python implementation.")
+    print("*" * 79)
+    setup(**args)
