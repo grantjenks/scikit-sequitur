@@ -25,7 +25,7 @@ class Symbol:
         if value.__class__ is Rule:
             value.value += 1
 
-    def insert_after(self, value):
+    def append(self, value):
         """Insert a value after this one."""
         symbol = Symbol(value, self.bigrams)
         symbol.join(self.next_symbol)
@@ -37,7 +37,7 @@ class Symbol:
 
         """
         if self.next_symbol:
-            self.delete_bigram()
+            self.remove_bigram()
 
             # This is to deal with trigrams, where we only record the second
             # pair of the overlapping bigrams. When we delete the second pair,
@@ -63,12 +63,10 @@ class Symbol:
         self.next_symbol = right
         right.prev_symbol = self
 
-    def delete_bigram(self):
+    def remove_bigram(self):
         """Remove the bigram from the hash table."""
-        if self.__class__ is Rule or self.next_symbol.__class__ is Rule:
-            return
         bigram = self.bigram()
-        if self.bigrams.get(bigram) == self:
+        if self.bigrams.get(bigram) is self:
             del self.bigrams[bigram]
 
     def check(self):
@@ -104,8 +102,8 @@ class Symbol:
         else:
             # Create a new rule.
             rule = Rule(self.bigrams)
-            rule.prev_symbol.insert_after(self.value)
-            rule.prev_symbol.insert_after(self.next_symbol.value)
+            rule.prev_symbol.append(self.value)
+            rule.prev_symbol.append(self.next_symbol.value)
             match.substitute(rule)
             self.substitute(rule)
             self.bigrams[rule.next_symbol.bigram()] = rule.next_symbol
@@ -121,7 +119,7 @@ class Symbol:
         prev = self.prev_symbol
         prev.next_symbol.delete()
         prev.next_symbol.delete()
-        prev.insert_after(rule)
+        prev.append(rule)
         if not prev.check():
             prev.next_symbol.check()
 
@@ -131,10 +129,9 @@ class Symbol:
 
         """
         self.prev_symbol.join(self.next_symbol)
-        if self.__class__ is not Rule:
-            self.delete_bigram()
-            if self.value.__class__ is Rule:
-                self.value.value -= 1
+        self.remove_bigram()
+        if self.value.__class__ is Rule:
+            self.value.value -= 1
 
     def expand(self):
         """This symbol is the last reference to its rule. It is deleted, and the
@@ -145,9 +142,7 @@ class Symbol:
         right = self.next_symbol
         first = self.value.next_symbol
         last = self.value.prev_symbol
-        bigram = self.bigram()
-        if self.bigrams.get(bigram) == self:
-            del self.bigrams[bigram]
+        self.remove_bigram()
         left.join(first)
         last.join(right)
         self.bigrams[last.bigram()] = last
@@ -208,7 +203,7 @@ class Parser:
         """
         tree = self._tree
         for value in iterable:
-            tree.prev_symbol.insert_after(value)
+            tree.prev_symbol.append(value)
             tree.prev_symbol.prev_symbol.check()
 
     def stop(self):
