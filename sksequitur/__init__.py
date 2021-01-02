@@ -14,7 +14,10 @@ More details are available online at http://www.sequitur.info/
 
 """
 
-from .core import Grammar, Parser, Stop, parse
+try:
+    from ._core import Grammar, Parser, Stop, parse
+except ImportError:
+    from .core import Grammar, Parser, Stop, parse
 
 __all__ = ["Grammar", "Parser", "Stop", "parse"]
 __title__ = "sksequitur"
