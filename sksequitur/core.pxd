@@ -2,7 +2,7 @@ cdef class Symbol:
     cdef dict bigrams
     cdef Symbol next_symbol, prev_symbol
     cdef object value
-    cpdef append(self, object value)
+    cpdef append(self, value)
     cpdef join(self, Symbol right)
     cdef _remove_bigram(self)
     cpdef check(self)
