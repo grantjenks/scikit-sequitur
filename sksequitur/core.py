@@ -16,7 +16,9 @@ class Symbol:
 
     """
 
-    def __init__(self, value, bigrams):
+    # pylint: disable=protected-access,unidiomatic-typecheck
+
+    def __init__(self, value, bigrams: dict):
         self.bigrams = bigrams
         self.next_symbol = None
         self.prev_symbol = None
@@ -168,7 +170,11 @@ class Rule(Symbol):
 
 
 class Stop:
-    __slots__ = []
+    """Stop token used to prevent bigram matches."""
+
+    # pylint: disable=too-few-public-methods
+
+    __slots__: list = []
 
     def __str__(self):
         return "|"
@@ -190,6 +196,7 @@ class Parser:
 
     @property
     def bigrams(self):
+        """Parser bigrams."""
         return self._bigrams
 
     def feed(self, iterable):
@@ -214,14 +221,14 @@ class Parser:
 class Production(int):
     """Production"""
 
-    __slots__ = []
+    __slots__: list = []
 
 
 class Grammar:
     """Initialize a grammar from a start rule."""
 
-    # TODO: How many times does each production occur?
-    # TODO: What are the top five longest expansions?
+    # pylint: disable=unidiomatic-typecheck
+
     value_map = {
         " ": "_",
         "\n": chr(0x21B5),
@@ -252,6 +259,7 @@ class Grammar:
             productions[production] = values
 
     def build_expansions(self):
+        """Build expansions for each production."""
         productions = self._productions
         expansions = self._expansions
 
