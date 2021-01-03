@@ -7,9 +7,9 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 5
+      max-parallel: 6
       matrix:
-        check: [blackcheck, isortcheck, flake8, pylint, mypy]
+        check: [blackcheck, isortcheck, flake8, mypy, pylint, rstcheck]
 
     steps:
     - uses: actions/checkout@v2

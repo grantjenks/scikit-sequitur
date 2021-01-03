@@ -62,7 +62,7 @@ understanding grammars.
    0 -> 1 1
    1 -> a b c                                        abc
 
-The `parse` function is a shortcut for `Parser`s and `Grammar`s.
+The `parse` function is a shortcut for `Parser` and `Grammar` objects.
 
 .. code-block:: python
 
