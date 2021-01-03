@@ -21,4 +21,4 @@ except ImportError:
 
 __all__ = ["Grammar", "Parser", "Stop", "parse"]
 __title__ = "sksequitur"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
