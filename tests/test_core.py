@@ -84,29 +84,29 @@ nine days old.\
 
 
 def test_genesis():
-    with open(module_dir / "genesis_input.txt") as reader:
+    with open(module_dir / "genesis_input.txt", encoding="utf-8") as reader:
         iterable = reader.read()
     grammar = parse(iterable)
     # print(grammar)
-    with open(module_dir / "genesis_result.txt") as reader:
+    with open(module_dir / "genesis_result.txt", encoding="utf-8") as reader:
         result = reader.read()
     assert result.endswith("\n")
     assert str(grammar) == result[:-1]
 
 
 def test_green_eggs_ham():
-    with open(module_dir / "iamsam_input.txt") as reader:
+    with open(module_dir / "iamsam_input.txt", encoding="utf-8") as reader:
         iterable = reader.read()
     grammar = parse(iterable)
     # print(grammar)
-    with open(module_dir / "iamsam_result.txt") as reader:
+    with open(module_dir / "iamsam_result.txt", encoding="utf-8") as reader:
         result = reader.read()
     assert result.endswith("\n")
     assert str(grammar) == result[:-1]
 
 
 def test_gc():
-    with open(module_dir / "iamsam_input.txt") as reader:
+    with open(module_dir / "iamsam_input.txt", encoding="utf-8") as reader:
         iterable = reader.read()
     parser = Parser()
     gc.collect()
@@ -116,7 +116,7 @@ def test_gc():
     # print(gc.garbage)
     grammar = Grammar(parser.tree)
     # print(grammar)
-    with open(module_dir / "iamsam_result.txt") as reader:
+    with open(module_dir / "iamsam_result.txt", encoding="utf-8") as reader:
         result = reader.read()
     assert result.endswith("\n")
     assert str(grammar) == result[:-1]
