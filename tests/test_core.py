@@ -16,7 +16,7 @@ def test_parser():
     assert str(grammar) == "0 -> a b"
     assert grammar.lengths() == {0: 2}
     assert grammar.counts() == {0: 1}
-    assert list(grammar.expand(0)) == ['a', 'b']
+    assert list(grammar.expand(0)) == ["a", "b"]
 
 
 def test_hello2():
