@@ -1,2 +1,9 @@
 [tool.black]
 line-length = 79
+include = '''
+(
+      /sksequitur/.+\.py
+    | /tests/.+\.py
+    | setup.py
+)
+'''
