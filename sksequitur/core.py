@@ -56,10 +56,10 @@ class Symbol:
             if (
                 self.prev_symbol is not None
                 and self.next_symbol is not None
-                and self.value == self.next_symbol.value
                 and self.value == self.prev_symbol.value
+                and self.value == self.next_symbol.value
             ):
-                self.bigrams[self._bigram()] = self
+                self.bigrams[self.prev_symbol._bigram()] = self.prev_symbol
 
         self.next_symbol = right
         right.prev_symbol = self
