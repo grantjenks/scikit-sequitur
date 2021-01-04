@@ -1,3 +1,7 @@
+"""SciKit Sequitur API
+
+"""
+
 from collections import Counter, defaultdict, deque
 from itertools import chain, count
 
@@ -16,7 +20,9 @@ class Production(int):
 
 
 class Grammar(dict):
+    """Convert start rule of parse tree to grammar."""
 
+    # pylint: disable=unidiomatic-typecheck
     value_map = {
         " ": "_",
         "\n": chr(0x21B5),
@@ -24,6 +30,7 @@ class Grammar(dict):
     }
 
     def __init__(self, tree):
+        super().__init__()
         counter = count()
         rule_to_production = defaultdict(lambda: Production(next(counter)))
         self._tree = rule_to_production[tree]
@@ -45,6 +52,7 @@ class Grammar(dict):
             self[production] = values
 
     def lengths(self):
+        """Return lengths of productions."""
         _lengths = {}
 
         def _visit(value):
@@ -60,6 +68,7 @@ class Grammar(dict):
         return Counter(_lengths)
 
     def counts(self):
+        """Return counts of productions."""
         counts = Counter(
             value
             for values in self.values()
@@ -69,6 +78,7 @@ class Grammar(dict):
         return counts
 
     def expansions(self):
+        """Return expansions of productions."""
         _expansions = {}
 
         def _visit(value):
@@ -86,6 +96,7 @@ class Grammar(dict):
         return _expansions
 
     def expand(self, production):
+        """Generator to expand production."""
         for value in self[production]:
             if type(value) is Production:
                 yield from self.expand(value)

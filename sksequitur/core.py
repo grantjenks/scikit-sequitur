@@ -215,6 +215,6 @@ class Parser:
 
 if __name__ == "sksequitur.core":  # pragma: no cover
     try:
-        from ._core import *
+        from ._core import *  # noqa # pylint: disable=wildcard-import
     except ImportError:
         pass
