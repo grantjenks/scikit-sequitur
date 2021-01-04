@@ -69,13 +69,14 @@ class Grammar(dict):
 
     def counts(self):
         """Return counts of productions."""
-        counts = Counter(
+        _counts = Counter(
             value
             for values in self.values()
             for value in values
             if type(value) is Production
         )
-        return counts
+        _counts[self._tree] = 1
+        return _counts
 
     def expansions(self):
         """Return expansions of productions."""
