@@ -2,9 +2,6 @@
 
 """
 
-from collections import defaultdict, deque
-from itertools import chain, count
-
 
 class Symbol:
     """Symbol
@@ -12,7 +9,7 @@ class Symbol:
     Initializes a new symbol. If it is non-terminal, increments the reference
     count of the corresponding rule.
 
-    Tightly coupled with Rule.
+    Tightly coupled with Rule. Not designed for extensibility.
 
     """
 
@@ -159,12 +156,12 @@ class Symbol:
 class Rule(Symbol):
     """Rule
 
-    The guard node is the linked list of symbols that make up the rule. It
+    The rule node is the linked list of symbols that make up the rule. It
     points forward to the first symbol in the rule, and backwards to the last
-    symbol in the rule. Its own value points to the rule data structure, so
-    that symbols can find out which rule they're in.
+    symbol in the rule. Its own value is a reference count recording the rule
+    utility.
 
-    Tightly coupled with Symbol.
+    Tightly coupled with Symbol. Not designed for extensibility.
 
     """
 
@@ -173,8 +170,6 @@ class Stop:
     """Stop token used to prevent bigram matches."""
 
     # pylint: disable=too-few-public-methods
-
-    __slots__: list = []
 
     def __str__(self):
         return "|"
@@ -218,90 +213,8 @@ class Parser:
         tree.prev_symbol.prev_symbol.check()
 
 
-class Production(int):
-    """Production"""
-
-    __slots__: list = []
-
-
-class Grammar:
-    """Initialize a grammar from a start rule."""
-
-    # pylint: disable=unidiomatic-typecheck
-
-    value_map = {
-        " ": "_",
-        "\n": chr(0x21B5),
-        "\t": chr(0x21E5),
-    }
-
-    def __init__(self, tree):
-        self._productions = productions = {}
-        self._expansions = {}
-        counter = count()
-        rule_to_production = defaultdict(lambda: Production(next(counter)))
-        self._tree = rule_to_production[tree]
-        rules = deque([tree])
-        while rules:
-            rule = rules.popleft()
-            production = rule_to_production[rule]
-            if production in productions:
-                continue  # Already visited.
-            symbol = rule.next_symbol
-            values = []
-            while type(symbol) is not Rule:
-                value = symbol.value
-                if type(value) is Rule:
-                    rules.append(value)
-                    value = rule_to_production[value]
-                values.append(value)
-                symbol = symbol.next_symbol
-            productions[production] = values
-
-    def build_expansions(self):
-        """Build expansions for each production."""
-        productions = self._productions
-        expansions = self._expansions
-
-        def _visit(production):
-            if not isinstance(production, Production):
-                return [production]
-            if production in expansions:
-                return expansions[production]
-            iterator = map(_visit, productions[production])
-            expansion = list(chain.from_iterable(iterator))
-            expansions[production] = expansion
-            return expansion
-
-        expansions.clear()
-        tree = self._tree
-        expansions[tree] = _visit(tree)
-
-    def __str__(self):
-        self.build_expansions()
-        expansions = self._expansions
-        value_map = self.value_map
-        lines = []
-        for production, values in sorted(self._productions.items()):
-            parts = [production, "->"]
-            parts.extend(value_map.get(value, value) for value in values)
-            prefix = " ".join(map(str, parts))
-            if production == 0:
-                lines.append(prefix)
-                continue
-            space = " " * (50 - len(prefix) if len(prefix) < 50 else 1)
-            expansion = expansions[production]
-            parts = (value_map.get(value, value) for value in expansion)
-            suffix = "".join(map(str, parts))
-            triple = prefix, space, suffix
-            line = "".join(triple)
-            lines.append(line)
-        return "\n".join(lines)
-
-
-def parse(iterable):
-    """Parse iterable and return grammar."""
-    parser = Parser()
-    parser.feed(iterable)
-    grammar = Grammar(parser.tree)
-    return grammar
+if __name__ == 'sksequitur.core':
+    try:
+        from ._core import *
+    except ImportError:
+        pass
