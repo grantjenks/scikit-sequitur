@@ -51,11 +51,19 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: Install dependencies
+    - name: Install tox
       run: |
         pip install --upgrade pip
         pip install tox
 
     - name: Test with tox
-      run: |
-        tox -e py
+      run: tox -e py
+
+    - name: Install cython and pytest
+      run: pip install cython pytest pytest-benchmark pytest-cov
+
+    - name: Build Cython extension
+      run: python setup.py build_ext --inplace
+
+    - name: Test with pytest
+      run: pytest
