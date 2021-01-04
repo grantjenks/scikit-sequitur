@@ -9,7 +9,7 @@ jobs:
     strategy:
       max-parallel: 6
       matrix:
-        check: [blackcheck, isortcheck, flake8, mypy, pylint, rstcheck]
+        check: [blackcheck, flake8, isortcheck, mypy, pylint, rstcheck]
 
     steps:
     - uses: actions/checkout@v2
