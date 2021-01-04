@@ -9,7 +9,7 @@ class Production(int):
 
     def __repr__(self):
         num = super().__repr__()
-        return f'Production({num!r})'
+        return f"Production({num})"
 
     def __str__(self):
         return super().__repr__()
@@ -46,6 +46,7 @@ class Grammar(dict):
 
     def lengths(self):
         _lengths = {}
+
         def _visit(value):
             if type(value) is not Production:
                 return 1
@@ -54,6 +55,7 @@ class Grammar(dict):
             length = sum(map(_visit, self[value]))
             _lengths[value] = length
             return length
+
         _lengths[self._tree] = _visit(self._tree)
         return Counter(_lengths)
 
@@ -68,6 +70,7 @@ class Grammar(dict):
 
     def expansions(self):
         _expansions = {}
+
         def _visit(value):
             if type(value) is not Production:
                 yield value
@@ -78,6 +81,7 @@ class Grammar(dict):
             expansion = list(chain.from_iterable(map(_visit, self[value])))
             _expansions[value] = expansion
             yield from expansion
+
         _expansions[self._tree] = list(_visit(self._tree))
         return _expansions
 

@@ -213,7 +213,7 @@ class Parser:
         tree.prev_symbol.prev_symbol.check()
 
 
-if __name__ == 'sksequitur.core':
+if __name__ == "sksequitur.core":  # pragma: no cover
     try:
         from ._core import *
     except ImportError:
