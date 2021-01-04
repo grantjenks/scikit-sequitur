@@ -125,7 +125,7 @@ def test_gc():
 def test_nums():
     iterable = [1, 2, 3, 4, 1, 2, 3, 5, 1, 2, 3]
     grammar = parse(iterable)
-    print(grammar)
+    # print(grammar)
     result = """\
 0 -> 1 4 1 5 1
 1 -> 1 2 3                                        123\
