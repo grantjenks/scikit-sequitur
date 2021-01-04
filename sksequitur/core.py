@@ -1,5 +1,7 @@
 """SciKit Sequitur Core
 
+Python code adapted from a Javascript version written by Craig Nevill-Manning.
+
 """
 
 
