@@ -114,6 +114,8 @@ Attributes can be added to mark symbols using keyword arguments.
    >>> mark = Mark(kind='start', name='foo.py')
    >>> mark
    Mark(kind='start', name='foo.py')
+   >>> mark.kind
+   'start'
 
 Mark symbols can not be made part of a rule.
 
