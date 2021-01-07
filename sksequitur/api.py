@@ -8,6 +8,24 @@ from itertools import chain, count
 from .core import Parser, Rule
 
 
+class Mark:
+    """Mark token used to prevent bigram matches."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __repr__(self):
+        name = type(self).__name__
+        items = vars(self).items()
+        args = ', '.join(f'{key}={value!r}' for key, value in items)
+        return f'{name}({args})'
+
+    def __str__(self):
+        return "|"
+
+
 class Production(int):
     """Production"""
 

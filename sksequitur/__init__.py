@@ -14,8 +14,8 @@ More details are available online at http://www.sequitur.info/
 
 """
 
-from .api import Grammar, parse
-from .core import Parser, Stop
+from .api import Grammar, Mark, parse
+from .core import Parser
 
 __all__ = ["Grammar", "Parser", "Stop", "parse"]
 __title__ = "sksequitur"
