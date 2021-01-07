@@ -3,6 +3,7 @@
 
 # Virtual environment directories
 /env*/
+/pip-wheel-metadata/*
 
 # Test files and directories
 .coverage
