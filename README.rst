@@ -87,6 +87,14 @@ Parsers can be converted to Grammars.
    0 -> 1 1
    1 -> a b c                                        abc
 
+Grammars are keyed by Productions.
+
+.. code-block:: python
+
+   >>> from sksequitur import Production
+   >>> grammar[Production(0)]
+   [Production(1), Production(1)]
+
 Mark symbols can be used to store metadata about a sequence. The mark symbol is
 printed as a pipe character "|".
 
