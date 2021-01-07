@@ -87,15 +87,35 @@ Parsers can be converted to Grammars.
    0 -> 1 1
    1 -> a b c                                        abc
 
-Stop symbols can not be made part of a rule.
+Mark symbols can be used to store metadata about a sequence. The mark symbol is
+printed as a pipe character "|".
+
+.. code-block:: python
+
+   >>> from sksequitur import Mark
+   >>> mark = Mark()
+   >>> mark
+   Mark()
+   >>> print(mark)
+   |
+
+Attributes can be added to mark symbols using keyword arguments.
+
+.. code-block:: python
+
+   >>> mark = Mark(kind='start', name='foo.py')
+   >>> mark
+   Mark(kind='start', name='foo.py')
+
+Mark symbols can not be made part of a rule.
 
 .. code-block:: python
 
    >>> parser = Parser()
    >>> parser.feed('ab')
-   >>> parser.stop()
+   >>> parser.feed([Mark()])
    >>> parser.feed('cab')
-   >>> parser.stop()
+   >>> parser.feed([Mark()])
    >>> parser.feed('c')
    >>> grammar = Grammar(parser.tree)
    >>> print(grammar)
