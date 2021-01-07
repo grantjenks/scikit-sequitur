@@ -168,15 +168,6 @@ class Rule(Symbol):
     """
 
 
-class Stop:
-    """Stop token used to prevent bigram matches."""
-
-    # pylint: disable=too-few-public-methods
-
-    def __str__(self):
-        return "|"
-
-
 class Parser:
     """Parser for Sequitur parse trees."""
 
@@ -206,13 +197,6 @@ class Parser:
         for value in iterable:
             tree.prev_symbol.append(value)
             tree.prev_symbol.prev_symbol.check()
-
-    def stop(self):
-        """Add stop token to the parser."""
-        tree: Rule = self._tree
-        stop = Stop()
-        tree.prev_symbol.append(stop)
-        tree.prev_symbol.prev_symbol.check()
 
 
 if __name__ == "sksequitur.core":  # pragma: no cover

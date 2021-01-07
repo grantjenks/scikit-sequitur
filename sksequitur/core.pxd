@@ -17,10 +17,6 @@ cdef class Rule(Symbol):
     pass
 
 
-cdef class Stop:
-    pass
-
-
 cdef class Parser:
     cdef dict _bigrams
     cdef Rule _tree
