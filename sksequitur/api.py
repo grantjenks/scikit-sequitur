@@ -96,6 +96,19 @@ class Grammar(dict):
         _counts[self._tree] = 1
         return _counts
 
+    def depths(self):
+        """Return minimum depth of each production."""
+        _depths = defaultdict(lambda: float('inf'))
+
+        def _visit(production, depth):
+            _depths[production] = min(depth, _depths[production])
+            for value in grammar[production]:
+                if type(value) is Production:
+                    _visit(value, depth + 1)
+
+        _visit(0, 0)
+        return _depths
+
     def expansions(self):
         """Return expansions of productions."""
         _expansions = {}
