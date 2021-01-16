@@ -199,7 +199,7 @@ class Parser:
             tree.prev_symbol.prev_symbol.check()
 
 
-if __name__ == "sksequitur.core":  # pragma: no cover
+if __name__ == 'sksequitur.core':  # pragma: no cover
     try:
         from ._core import *  # noqa # pylint: disable=wildcard-import
     except ImportError:

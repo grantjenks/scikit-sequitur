@@ -31,49 +31,49 @@ class Tox(TestCommand):
         exit(errno)
 
 
-with open("README.rst") as reader:
+with open('README.rst') as reader:
     readme = reader.read()
 
 args = dict(
-    name="scikit-sequitur",
+    name='scikit-sequitur',
     version=sksequitur.__version__,
-    description="Sequitur algorithm for inferring hierarchies",
+    description='Sequitur algorithm for inferring hierarchies',
     long_description=readme,
-    author="Grant Jenks",
-    author_email="contact@grantjenks.com",
-    url="http://www.grantjenks.com/docs/scikit-sequitur/",
-    license="Apache 2.0",
-    packages=["sksequitur"],
-    tests_require=["tox"],
-    cmdclass={"test": Tox},
+    author='Grant Jenks',
+    author_email='contact@grantjenks.com',
+    url='http://www.grantjenks.com/docs/scikit-sequitur/',
+    license='Apache 2.0',
+    packages=['sksequitur'],
+    tests_require=['tox'],
+    cmdclass={'test': Tox},
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: Apache Software License",
-        "Natural Language :: English",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: Implementation :: CPython",
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Natural Language :: English',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: Implementation :: CPython',
     ],
 )
 
 try:
     from Cython.Build import cythonize
 
-    ext_modules = [Extension("sksequitur._core", ["sksequitur/core.py"])]
+    ext_modules = [Extension('sksequitur._core', ['sksequitur/core.py'])]
     setup(
-        ext_modules=cythonize(ext_modules, language_level="3"),
+        ext_modules=cythonize(ext_modules, language_level='3'),
         **args,
     )
 except Exception as exception:
-    print("*" * 79)
+    print('*' * 79)
     print(exception)
-    print("*" * 79)
-    print("Failed to setup sksequitur with Cython. See error message above.")
-    print("Falling back to pure-Python implementation.")
-    print("*" * 79)
+    print('*' * 79)
+    print('Failed to setup sksequitur with Cython. See error message above.')
+    print('Falling back to pure-Python implementation.')
+    print('*' * 79)
     setup(**args)

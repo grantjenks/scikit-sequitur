@@ -1,5 +1,5 @@
 -e .
-black
+blue
 flake8
 isort
 mypy

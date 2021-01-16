@@ -19,11 +19,11 @@ class Mark:
     def __repr__(self):
         name = type(self).__name__
         items = vars(self).items()
-        args = ", ".join(f"{key}={value!r}" for key, value in items)
-        return f"{name}({args})"
+        args = ', '.join(f'{key}={value!r}' for key, value in items)
+        return f'{name}({args})'
 
     def __str__(self):
-        return "|"
+        return '|'
 
 
 class Production(int):
@@ -31,7 +31,7 @@ class Production(int):
 
     def __repr__(self):
         num = super().__repr__()
-        return f"Production({num})"
+        return f'Production({num})'
 
     def __str__(self):
         return super().__repr__()
@@ -42,9 +42,9 @@ class Grammar(dict):
 
     # pylint: disable=unidiomatic-typecheck
     value_map = {
-        " ": "_",
-        "\n": chr(0x21B5),
-        "\t": chr(0x21E5),
+        ' ': '_',
+        '\n': chr(0x21B5),
+        '\t': chr(0x21E5),
     }
 
     def __init__(self, tree):
@@ -140,20 +140,20 @@ class Grammar(dict):
         value_map = self.value_map
         lines = []
         for production, values in sorted(self.items()):
-            parts = [production, "->"]
+            parts = [production, '->']
             parts.extend(value_map.get(value, value) for value in values)
-            prefix = " ".join(map(str, parts))
+            prefix = ' '.join(map(str, parts))
             if production == 0:
                 lines.append(prefix)
                 continue
-            space = " " * max(1, 50 - len(prefix))
+            space = ' ' * max(1, 50 - len(prefix))
             expansion = expansions[production]
             parts = (value_map.get(value, value) for value in expansion)
-            suffix = "".join(map(str, parts))
+            suffix = ''.join(map(str, parts))
             triple = prefix, space, suffix
-            line = "".join(triple)
+            line = ''.join(triple)
             lines.append(line)
-        return "\n".join(lines)
+        return '\n'.join(lines)
 
 
 def parse(iterable):

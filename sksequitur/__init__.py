@@ -17,6 +17,6 @@ More details are available online at http://www.sequitur.info/
 from .api import Grammar, Mark, Production, parse
 from .core import Parser
 
-__all__ = ["Grammar", "Mark", "Parser", "Production", "parse"]
-__title__ = "sksequitur"
-__version__ = "0.3.0"
+__all__ = ['Grammar', 'Mark', 'Parser', 'Production', 'parse']
+__title__ = 'sksequitur'
+__version__ = '0.3.0'
