@@ -102,7 +102,7 @@ class Grammar(dict):
 
         def _visit(production, depth):
             _depths[production] = min(depth, _depths[production])
-            for value in grammar[production]:
+            for value in self[production]:
                 if type(value) is Production:
                     _visit(value, depth + 1)
 

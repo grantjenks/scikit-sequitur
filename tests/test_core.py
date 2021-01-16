@@ -16,6 +16,7 @@ def test_parser():
     assert str(grammar) == '0 -> a b'
     assert grammar.lengths() == {0: 2}
     assert grammar.counts() == {0: 1}
+    assert grammar.depths() == {0: 0}
     assert list(grammar.expand(0)) == ['a', 'b']
 
 
@@ -30,6 +31,7 @@ def test_hello2():
     assert str(grammar) == result
     assert grammar.lengths() == {0: len(iterable), 1: 5}
     assert grammar.counts() == {0: 1, 1: 2}
+    assert grammar.depths() == {0: 0, 1: 1}
     assert list(grammar.expand(0)) == list(iterable)
 
 
@@ -45,6 +47,7 @@ def test_abcabdabcabd():
     assert str(grammar) == result
     assert grammar.lengths() == {0: len(iterable), 1: 6, 2: 2}
     assert grammar.counts() == {0: 1, 1: 2, 2: 2}
+    assert grammar.depths() == {0: 0, 1: 1, 2: 2}
     assert list(grammar.expand(0)) == list(iterable)
 
 
@@ -60,6 +63,7 @@ def test_abbbabcbb():
     assert str(grammar) == result
     assert grammar.lengths() == {0: len(iterable), 1: 2, 2: 2}
     assert grammar.counts() == {0: 1, 1: 2, 2: 2}
+    assert grammar.depths() == {0: 0, 1: 1, 2: 1}
     assert list(grammar.expand(0)) == list(iterable)
 
 
@@ -148,6 +152,7 @@ def test_nums():
     assert str(grammar) == result
     assert grammar.lengths() == {0: 11, 1: 3}
     assert grammar.counts() == {0: 1, 1: 3}
+    assert grammar.depths() == {0: 0, 1: 1}
     assert list(grammar.expand(0)) == iterable
 
 
