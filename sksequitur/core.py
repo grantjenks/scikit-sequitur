@@ -38,7 +38,8 @@ class Symbol:
 
         """
         if self.next_symbol is not None:
-            self._remove_bigram()
+            if type(self) is not Rule and type(self.next_symbol) is not Rule:
+                self._remove_bigram()
 
             # This is to deal with trigrams, where we only record the second
             # pair of the overlapping bigrams. When we delete the second pair,
@@ -48,6 +49,9 @@ class Symbol:
             if (
                 right.prev_symbol is not None
                 and right.next_symbol is not None
+                and type(right) is not Rule
+                and type(right.prev_symbol) is not Rule
+                and type(right.next_symbol) is not Rule
                 and right.value == right.prev_symbol.value
                 and right.value == right.next_symbol.value
             ):
@@ -56,6 +60,9 @@ class Symbol:
             if (
                 self.prev_symbol is not None
                 and self.next_symbol is not None
+                and type(self) is not Rule
+                and type(self.prev_symbol) is not Rule
+                and type(self.next_symbol) is not Rule
                 and self.value == self.prev_symbol.value
                 and self.value == self.next_symbol.value
             ):
@@ -130,7 +137,8 @@ class Symbol:
 
         """
         self.prev_symbol.join(self.next_symbol)
-        self._remove_bigram()
+        if type(self) is not Rule and type(self.next_symbol) is not Rule:
+            self._remove_bigram()
         if type(self.value) is Rule:
             rule: Rule = self.value
             rule.value -= 1
@@ -148,7 +156,8 @@ class Symbol:
         self._remove_bigram()
         left.join(first)
         last.join(right)
-        self.bigrams[last._bigram()] = last
+        if type(last) is not Rule and type(last.next_symbol) is not Rule:
+            self.bigrams[last._bigram()] = last
 
     def _bigram(self):
         """Bigram tuple pair of self value and next symbol value."""
