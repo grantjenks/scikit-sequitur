@@ -9,7 +9,6 @@ Create annotations for optimization:
     $ cython -3 -a sksequitur/core.py
     $ python3 -m http.server
     # Open sksequitur/core.html in browser.
-
 """
 
 from setuptools import Extension, setup

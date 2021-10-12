@@ -1,5 +1,4 @@
 """SciKit Sequitur API
-
 """
 
 from collections import Counter, defaultdict, deque
