@@ -48,7 +48,9 @@ class Symbol:
             if (
                 right.prev_symbol is not None
                 and right.next_symbol is not None
+                and type(right) is type(right.prev_symbol)
                 and right.value == right.prev_symbol.value
+                and type(right) is type(right.next_symbol)
                 and right.value == right.next_symbol.value
             ):
                 self.bigrams[right._bigram()] = right
@@ -56,7 +58,9 @@ class Symbol:
             if (
                 self.prev_symbol is not None
                 and self.next_symbol is not None
+                and type(self) is type(self.prev_symbol)
                 and self.value == self.prev_symbol.value
+                and type(self) is type(self.next_symbol)
                 and self.value == self.next_symbol.value
             ):
                 self.bigrams[self.prev_symbol._bigram()] = self.prev_symbol
@@ -152,7 +156,7 @@ class Symbol:
 
     def _bigram(self):
         """Bigram tuple pair of self value and next symbol value."""
-        return (self.value, self.next_symbol.value)
+        return (type(self), self.value, type(self.next_symbol), self.next_symbol.value)
 
 
 class Rule(Symbol):
