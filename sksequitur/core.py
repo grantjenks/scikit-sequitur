@@ -47,7 +47,7 @@ class Symbol:
             if (
                 right.prev_symbol is not None
                 and right.next_symbol is not None
-                and type(right) is type(right.prev_symbol)
+                and type(right) is type(right.prev_symbol)  # noqa: E721
                 and right.value == right.prev_symbol.value
                 and type(right) is type(right.next_symbol)
                 and right.value == right.next_symbol.value
@@ -57,7 +57,7 @@ class Symbol:
             if (
                 self.prev_symbol is not None
                 and self.next_symbol is not None
-                and type(self) is type(self.prev_symbol)
+                and type(self) is type(self.prev_symbol)  # noqa: E721
                 and self.value == self.prev_symbol.value
                 and type(self) is type(self.next_symbol)
                 and self.value == self.next_symbol.value
