@@ -3,7 +3,7 @@ import pathlib
 import random
 import string
 
-from sksequitur import Grammar, Parser, parse
+from sksequitur import Grammar, Mark, Parser, parse
 
 module_dir = pathlib.Path(__file__).parent
 
@@ -11,7 +11,7 @@ module_dir = pathlib.Path(__file__).parent
 def test_parser():
     parser = Parser()
     parser.feed('ab')
-    assert ('a', 'b') in parser.bigrams
+    assert len(parser.bigrams) == 1
     grammar = Grammar(parser.tree)
     assert str(grammar) == '0 -> a b'
     assert grammar.lengths() == {0: 2}
@@ -165,3 +165,20 @@ def test_benchmark_parsing(benchmark):
     rand = random.Random(0)
     iterable = rand.choices(string.ascii_lowercase, k=100_000)
     benchmark(benchmark_parsing, iterable)
+
+
+def test_issue_7():
+    grammar = parse([
+        Mark(), 0, 18, 54, 22, Mark(), Mark(), 0, 0, 20, Mark(), 22, Mark(), 24,
+        Mark(), 0, 0, 20, 56, Mark(), 20, Mark(), 56, Mark(), 20, Mark(), 18,
+        20, 20, Mark(), Mark(), 1, 15, 20, 20, 20, 20, Mark(), 0, 20, 20, 40,
+        Mark(), 20, Mark(), 20, 20, 56, Mark(), 20, 20, Mark(), 20, 20, 56,
+        Mark(), 20, 20, Mark(), 24, 56, Mark(), Mark(), 20, 20, Mark(), 20, 43,
+        Mark(), 55, Mark(), 20, 20, Mark(), 0, Mark(), 20, 38, Mark(), 20, 20,
+        27, Mark(), 0, 10, 10, 41, Mark(), 20, Mark(), 55, 55, 20, 20, 20, 20,
+        20, 35, Mark(), Mark(), 20, Mark(), Mark(), 0, 24, Mark(), Mark(), 22,
+        Mark(), Mark(), 0, 0,
+    ])
+    assert grammar.lengths() == {0: 112, 1: 3, 2: 2, 3: 4, 4: 2, 5: 3}
+    assert grammar.counts() == {0: 1, 1: 2, 2: 9, 3: 2, 4: 2, 5: 2}
+    assert grammar.depths() == {0: 0, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1}
