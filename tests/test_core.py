@@ -170,10 +170,10 @@ def test_benchmark_parsing(benchmark):
 def test_issue_7():
     # fmt: off
     grammar = parse([
-        Mark(), 0, 18, 54, 22, Mark(), Mark(), 0, 0, 20, Mark(), 22, Mark(), 24,
-        Mark(), 0, 0, 20, 56, Mark(), 20, Mark(), 56, Mark(), 20, Mark(), 18,
-        20, 20, Mark(), Mark(), 1, 15, 20, 20, 20, 20, Mark(), 0, 20, 20, 40,
-        Mark(), 20, Mark(), 20, 20, 56, Mark(), 20, 20, Mark(), 20, 20, 56,
+        Mark(), 0, 18, 54, 22, Mark(), Mark(), 0, 0, 20, Mark(), 22, Mark(),
+        24, Mark(), 0, 0, 20, 56, Mark(), 20, Mark(), 56, Mark(), 20, Mark(),
+        18, 20, 20, Mark(), Mark(), 1, 15, 20, 20, 20, 20, Mark(), 0, 20, 20,
+        40, Mark(), 20, Mark(), 20, 20, 56, Mark(), 20, 20, Mark(), 20, 20, 56,
         Mark(), 20, 20, Mark(), 24, 56, Mark(), Mark(), 20, 20, Mark(), 20, 43,
         Mark(), 55, Mark(), 20, 20, Mark(), 0, Mark(), 20, 38, Mark(), 20, 20,
         27, Mark(), 0, 10, 10, 41, Mark(), 20, Mark(), 55, 55, 20, 20, 20, 20,
