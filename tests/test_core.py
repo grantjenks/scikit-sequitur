@@ -24,10 +24,10 @@ def test_hello2():
     iterable = 'hello hello\n'
     grammar = parse(iterable)
     # print(grammar)
-    result = '''\
+    result = """\
 0 -> 1 _ 1 ↵
 1 -> h e l l o                                    hello\
-'''
+"""
     assert str(grammar) == result
     assert grammar.lengths() == {0: len(iterable), 1: 5}
     assert grammar.counts() == {0: 1, 1: 2}
@@ -39,11 +39,11 @@ def test_abcabdabcabd():
     iterable = 'abcabdabcabd'
     grammar = parse(iterable)
     # print(grammar)
-    result = '''\
+    result = """\
 0 -> 1 1
 1 -> 2 c 2 d                                      abcabd
 2 -> a b                                          ab\
-'''
+"""
     assert str(grammar) == result
     assert grammar.lengths() == {0: len(iterable), 1: 6, 2: 2}
     assert grammar.counts() == {0: 1, 1: 2, 2: 2}
@@ -55,11 +55,11 @@ def test_abbbabcbb():
     iterable = 'abbbabcbb'
     grammar = parse(iterable)
     # print(grammar)
-    result = '''\
+    result = """\
 0 -> 1 2 1 c 2
 1 -> a b                                          ab
 2 -> b b                                          bb\
-'''
+"""
     assert str(grammar) == result
     assert grammar.lengths() == {0: len(iterable), 1: 2, 2: 2}
     assert grammar.counts() == {0: 1, 1: 2, 2: 2}
@@ -68,7 +68,7 @@ def test_abbbabcbb():
 
 
 def test_pease_porridge():
-    iterable = '''\
+    iterable = """\
 pease porridge hot,
 pease porridge cold,
 pease porridge in the pot,
@@ -78,10 +78,10 @@ some like it hot,
 some like it cold,
 some like it in the pot,
 nine days old.\
-'''
+"""
     grammar = parse(iterable)
     # print(grammar)
-    result = '''\
+    result = """\
 0 -> 1 2 3 4 3 5 ↵ ↵ 6 2 7 4 7 5
 1 -> p e a s 8 r r i d g 9                        pease_porridge_
 2 -> h o t                                        hot
@@ -95,7 +95,7 @@ nine days old.\
 10 -> , ↵                                         ,↵
 11 -> o l d                                       old
 12 -> i n                                         in\
-'''
+"""
     assert str(grammar) == result
     assert list(grammar.expand(0)) == list(iterable)
 
@@ -145,10 +145,10 @@ def test_nums():
     iterable = [1, 2, 3, 4, 1, 2, 3, 5, 1, 2, 3]
     grammar = parse(iterable)
     # print(grammar)
-    result = '''\
+    result = """\
 0 -> 1 4 1 5 1
 1 -> 1 2 3                                        123\
-'''
+"""
     assert str(grammar) == result
     assert grammar.lengths() == {0: 11, 1: 3}
     assert grammar.counts() == {0: 1, 1: 3}
@@ -168,6 +168,7 @@ def test_benchmark_parsing(benchmark):
 
 
 def test_issue_7():
+    # fmt: off
     grammar = parse([
         Mark(), 0, 18, 54, 22, Mark(), Mark(), 0, 0, 20, Mark(), 22, Mark(), 24,
         Mark(), 0, 0, 20, 56, Mark(), 20, Mark(), 56, Mark(), 20, Mark(), 18,
@@ -179,6 +180,7 @@ def test_issue_7():
         20, 35, Mark(), Mark(), 20, Mark(), Mark(), 0, 24, Mark(), Mark(), 22,
         Mark(), Mark(), 0, 0,
     ])
+    # fmt: on
     assert grammar.lengths() == {0: 112, 1: 3, 2: 2, 3: 4, 4: 2, 5: 3}
     assert grammar.counts() == {0: 1, 1: 2, 2: 9, 3: 2, 4: 2, 5: 2}
     assert grammar.depths() == {0: 0, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1}

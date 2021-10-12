@@ -1,7 +1,6 @@
 """SciKit Sequitur Core
 
 Python code adapted from a Javascript version written by Craig Nevill-Manning.
-
 """
 
 
@@ -156,7 +155,12 @@ class Symbol:
 
     def _bigram(self):
         """Bigram tuple pair of self value and next symbol value."""
-        return (type(self), self.value, type(self.next_symbol), self.next_symbol.value)
+        return (
+            type(self),
+            self.value,
+            type(self.next_symbol),
+            self.next_symbol.value,
+        )
 
 
 class Rule(Symbol):

@@ -11,7 +11,6 @@ The algorithm was developed by:
     Ian Witten, University of Waikato, New Zealand
 
 More details are available online at http://www.sequitur.info/
-
 """
 
 from .api import Grammar, Mark, Production, parse
