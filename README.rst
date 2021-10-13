@@ -25,8 +25,8 @@ Features
 --------
 
 - Pure-Python
-- Developed on Python 3.8
-- Tested on CPython 3.6, 3.7, 3.8
+- Developed on Python 3.10
+- Tested on CPython 3.6, 3.7, 3.8, 3.9, 3.10
 - Tested using GitHub Actions on Linux, Mac, and Windows
 
 .. image:: https://github.com/grantjenks/scikit-sequitur/workflows/integration/badge.svg
